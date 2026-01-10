@@ -8,7 +8,7 @@ Lightweight, terminal‑friendly quiz service inspired by **Kahoot**. Built as a
 - **Real‑time WebSocket quiz flow** via FastAPI and `websockets`
 - **Multiple player support** with simple connection management
 - **Admin‑driven progression** through quiz questions
-- **YAML‑defined quizzes** validated against shared dataclasses
+- **YAML‑defined quizzes** validated against shared data models
 - **Terminal‑based UX** for both admin and players
 - Clean, typed Python code with `ruff`, `ty` and managed by `uv` tooling
 
@@ -39,8 +39,8 @@ This GitHub organization currently contains these repositories:
   - Entry point: [`quiz_admin.__main__.main`](https://github.com/quiz-cli/quiz-admin/blob/main/src/quiz_admin/__main__.py).
   - Example quiz files: [`quiz_example.yaml`](https://github.com/quiz-cli/quiz-admin/blob/main/data/quiz_example.yaml)
 
-- **Shared models** – common dataclasses for quizzes: see [`quiz-common` README](https://github.com/quiz-cli/quiz-common#readme)
-  - Defines dataclasses for quiz structure:
+- **Shared models** – common data models for quizzes: see [`quiz-common` README](https://github.com/quiz-cli/quiz-common#readme)
+  - Defines data models for quiz structure:
     - [`quiz_common.models.Quiz`](https://github.com/quiz-cli/quiz-common/blob/main/src/quiz_common/models.py)
     - [`quiz_common.models.Question`](https://github.com/quiz-cli/quiz-common/blob/main/src/quiz_common/models.py)
     - [`quiz_common.models.Option`](https://github.com/quiz-cli/quiz-common/blob/main/src/quiz_common/models.py)

@@ -60,13 +60,13 @@ jobs:
       - name: Add quiz-common from selected branch
         run: |
           uv add \
-            "quiz-common github.com/quiz-cli/quiz-common.git" \
+            "quiz-common  @ git+https://github.com/quiz-cli/quiz-common.git" \
             --branch "${{ steps.common_branch.outputs.ref }}"
 
       - name: Add quiz-server from selected branch
         run: |
           uv add \
-            "quiz-server github.com/quiz-cli/quiz-server.git" \
+            "quiz-server  @ git+https://github.com/quiz-cli/quiz-server.git" \
             --branch "${{ steps.server_branch.outputs.ref }}"
       
       - name: Run tests

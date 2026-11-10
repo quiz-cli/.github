@@ -1,0 +1,73 @@
+name: Reusable PyTest on Branche Name
+on:
+  workflow_call:
+    
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Resolve repo quis-tests ref
+        id: tests_branch
+        shell: bash
+        run: |
+          if git ls-remote --exit-code --heads \
+            "https://github.com/quiz-cli/quiz-tests.git" \
+            "${{ github.head_ref }}" >/dev/null; then
+            echo "ref=${{ github.head_ref }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "ref=main" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Resolve repo quis-server ref
+        id: server_branch
+        shell: bash
+        run: |
+          if git ls-remote --exit-code --heads \
+            "https://github.com/quiz-cli/quiz-server.git" \
+            "${{ github.head_ref }}" >/dev/null; then
+            echo "ref=${{ github.head_ref }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "ref=main" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Resolve repo quis-common ref
+        id: common_branch
+        shell: bash
+        run: |
+          if git ls-remote --exit-code --heads \
+            "https://github.com/quiz-cli/quiz-common.git" \
+            "${{ github.head_ref }}" >/dev/null; then
+            echo "ref=${{ github.head_ref }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "ref=main" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout quiz-tests code
+        uses: actions/checkout@v4
+        with:
+          repository: quiz-cli/quiz-tests
+          ref: ${{ steps.tests_branch.outputs.ref }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          python-version: '3.13'
+          enable-cache: true
+
+      - name: Sync quiz-tests dependencies
+        run: uv sync --locked --all-extras --dev 
+        
+      - name: Add quiz-common from selected branch
+        run: |
+          uv add \
+            "quiz-common github.com/quiz-cli/quiz-common.git" \
+            --branch "${{ steps.common_branch.outputs.ref }}"
+
+      - name: Add quiz-server from selected branch
+        run: |
+          uv add \
+            "quiz-server github.com/quiz-cli/quiz-server.git" \
+            --branch "${{ steps.server_branch.outputs.ref }}"
+      
+      - name: Run tests
+        run: uv run pytest -vv  

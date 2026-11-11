@@ -1,6 +1,7 @@
 name: Reusable PyTest on Branche Name
 on:
   workflow_call:
+  workflow_dispatch:
     
 jobs:
   test:

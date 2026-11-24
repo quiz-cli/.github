@@ -46,6 +46,9 @@ This GitHub organization currently contains these repositories:
     - [`quiz_common.models.Option`](https://github.com/quiz-cli/quiz-common/blob/main/src/quiz_common/models.py)
   - Used by server and both clients to ensure a consistent quiz format (YAML / JSON).
 
+![Diagram preview](./quiz-graph-preview.png)
+
+[Full image see here](./quiz-graph.md)
 
 ## Development
 

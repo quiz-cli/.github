@@ -1,0 +1,67 @@
+name: Render Mermaid diagram
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+    paths:
+      - "profile/quiz-graph.md"
+      - ".github/workflows/render-preview.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install mermaid-cli and ImageMagick
+        run: |
+          npm install -g @mermaid-js/mermaid-cli
+          sudo apt-get update
+          sudo apt-get install -y imagemagick
+
+      - name: Render full diagram
+        run: |
+          mmdc \
+            --input profile/quiz-graph.md \
+            --output profile/quiz-graph-full.png \
+            --scale 2 \
+            --backgroundColor white \
+            --puppeteerConfigFile .github/puppeteer-config.json
+
+      - name: Create 500x280 preview
+        run: |
+          magick profile/quiz-graph-full-1.png \
+            -resize 500x \
+            -gravity North \
+            -crop 500x280+0+0 \
+            profile/quiz-graph-preview.png
+
+      - name: Commit generated preview
+        run: |
+          git config user.name "github-actions[bot]"
+          
+          git add profile/quiz-graph-preview.png
+
+          if git diff --staged --quiet; then
+            echo "No diagram changes to commit"
+            exit 0
+          fi
+
+          git commit -m "chore: update diagram preview"
+          git push origin HEAD:${{ github.head_ref }}
